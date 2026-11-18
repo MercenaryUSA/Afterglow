@@ -22,7 +22,18 @@ A sleek, modern dark theme for [Vencord](https://vencord.dev): near-black graphi
 
 ## Installation
 
-1. Get `Afterglow.theme.css`.
+### Option 1: Online theme (updates automatically)
+
+1. Open Discord → **Settings** → **Vencord** → **Themes** → **Online Themes**.
+2. Paste this link and save:
+
+   ```
+   https://raw.githubusercontent.com/MercenaryUSA/Afterglow/main/Afterglow.theme.css
+   ```
+
+### Option 2: Local file
+
+1. Download [`Afterglow.theme.css`](Afterglow.theme.css).
 2. Open Discord → **Settings** → **Vencord** → **Themes** → **Open Themes Folder**.
 3. Drop the file in. On Windows the folder is `%APPDATA%\Vencord\themes`.
 4. Enable **Afterglow** in the list.

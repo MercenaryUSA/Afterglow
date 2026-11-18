@@ -1,0 +1,1012 @@
+/**
+ * @name Afterglow
+ * @author Mercenary
+ * @version 1.1.0
+ * @description Sleek and modern: near-black graphite surfaces, hairline borders, soft rounded panels and a single cool emerald accent (emerald into teal) used only where it matters. Calm, quick motion and no visual noise. Uses Chakra Petch + Orbitron, the same fonts as Neon Static.
+ */
+
+/* Fonts (imports must stay at the top of the file).
+   Google Fonts first; jsdelivr serves the same fonts as a fallback. */
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Orbitron:wght@500;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource/chakra-petch@5/index.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource-variable/orbitron@5/index.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource-variable/jetbrains-mono@5/index.css");
+
+/* =========================================================================
+   1. KNOBS: change these to restyle the whole theme
+   ========================================================================= */
+:root {
+    /* Fonts (same stack as Neon Static) */
+    --ag-font: "Chakra Petch", "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --ag-font-display: "Orbitron", "Orbitron Variable", var(--ag-font);
+    --ag-font-code: "JetBrains Mono", "JetBrains Mono Variable", "gg mono", Consolas, "Courier New", monospace;
+
+    /* Accent: emerald, with teal as the second stop in gradients */
+    --ag-accent: #2fd6a0;
+    --ag-accent-hsl: 161 67% 51%;
+    --ag-accent-2: #1fb5c9;
+    --ag-accent-strong: #0b7a5a;
+    /* filled buttons; dark enough for white text */
+    --ag-accent-2-strong: #0e6f80;
+    --ag-accent-soft: color-mix(in oklab, var(--ag-accent) 14%, transparent);
+    --ag-accent-softer: color-mix(in oklab, var(--ag-accent) 7%, transparent);
+    --ag-gradient: linear-gradient(135deg, var(--ag-accent), var(--ag-accent-2));
+
+    /* Surfaces, darkest -> lightest (near-black graphite) */
+    --ag-bg-0: #050506;
+    /* app frame / server bar */
+    --ag-bg-1: #08090a;
+    /* chat */
+    --ag-bg-2: #0a0b0d;
+    /* channel sidebar */
+    --ag-surface-1: #0f1012;
+    --ag-surface-2: #131518;
+    --ag-surface-3: #191b1f;
+
+    /* Text */
+    --ag-text-strong: #e6e8eb;
+    --ag-text: #b9bdc5;
+    --ag-text-muted: #7c818c;
+    --ag-text-subtle: #585d68;
+    --ag-link: #6fe3bd;
+
+    /* Lines */
+    --ag-line-1: rgb(255 255 255 / 0.05);
+    --ag-line-2: rgb(255 255 255 / 0.08);
+    --ag-line-3: rgb(255 255 255 / 0.14);
+    --ag-line-accent: color-mix(in oklab, var(--ag-accent) 45%, transparent);
+
+    /* Shape */
+    --ag-radius-sm: 6px;
+    --ag-radius-md: 10px;
+    --ag-radius-lg: 14px;
+    --ag-radius-pill: 999px;
+
+    /* Atmosphere */
+    --ag-haze: 0.05;
+    /* strength of the accent glow in the app frame corners; 0 turns it off */
+
+    /* Motion */
+    --ag-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ag-fast: 120ms;
+    --ag-med: 200ms;
+    --ag-slow: 300ms;
+
+    /* Depth */
+    --ag-glass: color-mix(in oklab, var(--ag-surface-2) 80%, transparent);
+    --ag-blur: blur(18px) saturate(1.3);
+    --ag-edge: inset 0 1px 0 rgb(255 255 255 / 0.05);
+    --ag-shadow: 0 20px 48px -14px rgb(0 0 0 / 0.7), 0 2px 6px rgb(0 0 0 / 0.35);
+    --ag-ring: 0 0 0 3px var(--ag-accent-softer);
+}
+
+/* =========================================================================
+   2. BASE PALETTE
+   Discord builds every colour (buttons, selected rows, highlights,
+   toggles...) from these scales. Recolouring them themes the places
+   that have no token of their own.
+   ========================================================================= */
+:root {
+    /* neutral scale: graphite, barely tinted */
+    --neutral-1-hsl: 225 calc(var(--saturation-factor, 1)*0%) 100%;
+    --neutral-2-hsl: 225 calc(var(--saturation-factor, 1)*1.5%) 98.4%;
+    --neutral-3-hsl: 225 calc(var(--saturation-factor, 1)*4.1%) 97.1%;
+    --neutral-4-hsl: 225 calc(var(--saturation-factor, 1)*3.2%) 95.5%;
+    --neutral-5-hsl: 225 calc(var(--saturation-factor, 1)*4.1%) 94.1%;
+    --neutral-6-hsl: 225 calc(var(--saturation-factor, 1)*3.5%) 92.5%;
+    --neutral-7-hsl: 225 calc(var(--saturation-factor, 1)*3.2%) 91.4%;
+    --neutral-8-hsl: 225 calc(var(--saturation-factor, 1)*3%) 89.8%;
+    --neutral-9-hsl: 225 calc(var(--saturation-factor, 1)*3.5%) 88.4%;
+    --neutral-10-hsl: 225 calc(var(--saturation-factor, 1)*3.2%) 86.9%;
+    --neutral-11-hsl: 225 calc(var(--saturation-factor, 1)*3.6%) 85.5%;
+    --neutral-12-hsl: 225 calc(var(--saturation-factor, 1)*3.4%) 83.9%;
+    --neutral-13-hsl: 225 calc(var(--saturation-factor, 1)*3.2%) 82.7%;
+    --neutral-14-hsl: 225 calc(var(--saturation-factor, 1)*3.1%) 81.2%;
+    --neutral-15-hsl: 225 calc(var(--saturation-factor, 1)*3.4%) 79.8%;
+    --neutral-16-hsl: 225 calc(var(--saturation-factor, 1)*3.2%) 78.2%;
+    --neutral-17-hsl: 225 calc(var(--saturation-factor, 1)*3.2%) 77.1%;
+    --neutral-18-hsl: 225 calc(var(--saturation-factor, 1)*3%) 75.5%;
+    --neutral-19-hsl: 225 calc(var(--saturation-factor, 1)*3.2%) 74.1%;
+    --neutral-20-hsl: 225 calc(var(--saturation-factor, 1)*3.2%) 72.5%;
+    --neutral-21-hsl: 225 calc(var(--saturation-factor, 1)*3.1%) 71.4%;
+    --neutral-22-hsl: 225 calc(var(--saturation-factor, 1)*3.3%) 70%;
+    --neutral-23-hsl: 225 calc(var(--saturation-factor, 1)*3.2%) 68.4%;
+    --neutral-24-hsl: 225 calc(var(--saturation-factor, 1)*3.1%) 67.3%;
+    --neutral-25-hsl: 225 calc(var(--saturation-factor, 1)*3%) 65.7%;
+    --neutral-26-hsl: 225 calc(var(--saturation-factor, 1)*3.2%) 64.3%;
+    --neutral-27-hsl: 225 calc(var(--saturation-factor, 1)*3.2%) 63.1%;
+    --neutral-28-hsl: 225 calc(var(--saturation-factor, 1)*3.1%) 61.6%;
+    --neutral-29-hsl: 225 calc(var(--saturation-factor, 1)*3%) 60.4%;
+    --neutral-30-hsl: 225 calc(var(--saturation-factor, 1)*3.2%) 59%;
+    --neutral-31-hsl: 225 calc(var(--saturation-factor, 1)*2.9%) 57.6%;
+    --neutral-32-hsl: 225 calc(var(--saturation-factor, 1)*3%) 56.3%;
+    --neutral-33-hsl: 225 calc(var(--saturation-factor, 1)*3%) 55.1%;
+    --neutral-34-hsl: 225 calc(var(--saturation-factor, 1)*3%) 53.5%;
+    --neutral-35-hsl: 225 calc(var(--saturation-factor, 1)*2.9%) 52.4%;
+    --neutral-36-hsl: 225 calc(var(--saturation-factor, 1)*3%) 51%;
+    --neutral-37-hsl: 225 calc(var(--saturation-factor, 1)*2.9%) 49.6%;
+    --neutral-38-hsl: 225 calc(var(--saturation-factor, 1)*3.1%) 48.2%;
+    --neutral-39-hsl: 225 calc(var(--saturation-factor, 1)*3.1%) 47.1%;
+    --neutral-40-hsl: 225 calc(var(--saturation-factor, 1)*3.2%) 45.9%;
+    --neutral-41-hsl: 225 calc(var(--saturation-factor, 1)*3.3%) 44.2%;
+    --neutral-42-hsl: 225 calc(var(--saturation-factor, 1)*3.4%) 42.9%;
+    --neutral-43-hsl: 225 calc(var(--saturation-factor, 1)*3.5%) 41.7%;
+    --neutral-44-hsl: 225 calc(var(--saturation-factor, 1)*3.8%) 40.2%;
+    --neutral-45-hsl: 225 calc(var(--saturation-factor, 1)*3.9%) 39%;
+    --neutral-46-hsl: 225 calc(var(--saturation-factor, 1)*4%) 37.7%;
+    --neutral-47-hsl: 225 calc(var(--saturation-factor, 1)*4%) 36.3%;
+    --neutral-48-hsl: 225 calc(var(--saturation-factor, 1)*4.3%) 34.8%;
+    --neutral-49-hsl: 225 calc(var(--saturation-factor, 1)*4.5%) 33.6%;
+    --neutral-50-hsl: 225 calc(var(--saturation-factor, 1)*4.6%) 32.4%;
+    --neutral-51-hsl: 225 calc(var(--saturation-factor, 1)*4.8%) 31.5%;
+    --neutral-52-hsl: 225 calc(var(--saturation-factor, 1)*4.6%) 30.9%;
+    --neutral-53-hsl: 225 calc(var(--saturation-factor, 1)*5%) 30.2%;
+    --neutral-54-hsl: 225 calc(var(--saturation-factor, 1)*4.8%) 29.6%;
+    --neutral-55-hsl: 225 calc(var(--saturation-factor, 1)*5%) 28.8%;
+    --neutral-56-hsl: 225 calc(var(--saturation-factor, 1)*4.8%) 28.1%;
+    --neutral-57-hsl: 225 calc(var(--saturation-factor, 1)*4.9%) 27.3%;
+    --neutral-58-hsl: 225 calc(var(--saturation-factor, 1)*5.1%) 26.9%;
+    --neutral-59-hsl: 225 calc(var(--saturation-factor, 1)*5.2%) 26%;
+    --neutral-60-hsl: 225 calc(var(--saturation-factor, 1)*5.3%) 25.2%;
+    --neutral-61-hsl: 225 calc(var(--saturation-factor, 1)*5.2%) 24.6%;
+    --neutral-62-hsl: 225 calc(var(--saturation-factor, 1)*5.5%) 24%;
+    --neutral-63-hsl: 225 calc(var(--saturation-factor, 1)*5.4%) 23.4%;
+    --neutral-64-hsl: 225 calc(var(--saturation-factor, 1)*5.5%) 22.6%;
+    --neutral-65-hsl: 225 calc(var(--saturation-factor, 1)*5.6%) 22.2%;
+    --neutral-66-hsl: 225 calc(var(--saturation-factor, 1)*5.8%) 21.4%;
+    --neutral-67-hsl: 225 calc(var(--saturation-factor, 1)*5.6%) 20.8%;
+    --neutral-68-hsl: 225 calc(var(--saturation-factor, 1)*5.4%) 20.2%;
+    --neutral-69-hsl: 225 calc(var(--saturation-factor, 1)*5.9%) 19.6%;
+    --neutral-70-hsl: 225 calc(var(--saturation-factor, 1)*5.6%) 19%;
+    --neutral-71-hsl: 225 calc(var(--saturation-factor, 1)*5.8%) 18.2%;
+    --neutral-72-hsl: 225 calc(var(--saturation-factor, 1)*5.9%) 17.8%;
+    --neutral-73-hsl: 225 calc(var(--saturation-factor, 1)*6%) 17%;
+    --neutral-74-hsl: 225 calc(var(--saturation-factor, 1)*6.2%) 16.6%;
+    --neutral-75-hsl: 225 calc(var(--saturation-factor, 1)*6.3%) 15.8%;
+    --neutral-76-hsl: 225 calc(var(--saturation-factor, 1)*6%) 15.3%;
+    --neutral-77-hsl: 225 calc(var(--saturation-factor, 1)*6.2%) 14.9%;
+    --neutral-78-hsl: 225 calc(var(--saturation-factor, 1)*6.3%) 14.1%;
+    --neutral-79-hsl: 225 calc(var(--saturation-factor, 1)*6.5%) 13.7%;
+    --neutral-80-hsl: 225 calc(var(--saturation-factor, 1)*6.7%) 13%;
+    --neutral-81-hsl: 225 calc(var(--saturation-factor, 1)*6.3%) 12.4%;
+    --neutral-82-hsl: 225 calc(var(--saturation-factor, 1)*6.4%) 12%;
+    --neutral-83-hsl: 225 calc(var(--saturation-factor, 1)*6.6%) 11.3%;
+    --neutral-84-hsl: 225 calc(var(--saturation-factor, 1)*6.8%) 10.9%;
+    --neutral-85-hsl: 225 calc(var(--saturation-factor, 1)*7%) 10.2%;
+    --neutral-86-hsl: 225 calc(var(--saturation-factor, 1)*7.1%) 9.8%;
+    --neutral-87-hsl: 225 calc(var(--saturation-factor, 1)*6.7%) 9.3%;
+    --neutral-88-hsl: 225 calc(var(--saturation-factor, 1)*7.6%) 8.7%;
+    --neutral-89-hsl: 225 calc(var(--saturation-factor, 1)*7%) 8.2%;
+    --neutral-90-hsl: 225 calc(var(--saturation-factor, 1)*7.2%) 7.8%;
+    --neutral-91-hsl: 225 calc(var(--saturation-factor, 1)*7.5%) 7.1%;
+    --neutral-92-hsl: 225 calc(var(--saturation-factor, 1)*6.8%) 6.5%;
+    --neutral-93-hsl: 225 calc(var(--saturation-factor, 1)*8.1%) 6%;
+    --neutral-94-hsl: 225 calc(var(--saturation-factor, 1)*7.5%) 5.1%;
+    --neutral-95-hsl: 225 calc(var(--saturation-factor, 1)*7.9%) 4.4%;
+    --neutral-96-hsl: 225 calc(var(--saturation-factor, 1)*8.5%) 3.8%;
+    --neutral-97-hsl: 225 calc(var(--saturation-factor, 1)*9.9%) 2.7%;
+    --neutral-98-hsl: 225 calc(var(--saturation-factor, 1)*8.7%) 1.9%;
+    --neutral-99-hsl: 225 calc(var(--saturation-factor, 1)*9.9%) 0.8%;
+    --neutral-100-hsl: 225 calc(var(--saturation-factor, 1)*5.3%) 0%;
+    /* blurple scale -> emerald */
+    --blurple-1-hsl: 161 calc(var(--saturation-factor, 1)*88%) 95.1%;
+    --blurple-2-hsl: 161 calc(var(--saturation-factor, 1)*88%) 94.5%;
+    --blurple-3-hsl: 161 calc(var(--saturation-factor, 1)*88%) 93.7%;
+    --blurple-4-hsl: 161 calc(var(--saturation-factor, 1)*88%) 92.9%;
+    --blurple-5-hsl: 161 calc(var(--saturation-factor, 1)*88%) 92.4%;
+    --blurple-6-hsl: 161 calc(var(--saturation-factor, 1)*88%) 91.6%;
+    --blurple-7-hsl: 161 calc(var(--saturation-factor, 1)*88%) 91%;
+    --blurple-8-hsl: 161 calc(var(--saturation-factor, 1)*88%) 90.2%;
+    --blurple-9-hsl: 161 calc(var(--saturation-factor, 1)*88%) 89.6%;
+    --blurple-10-hsl: 161 calc(var(--saturation-factor, 1)*88%) 89%;
+    --blurple-11-hsl: 161 calc(var(--saturation-factor, 1)*88%) 88.2%;
+    --blurple-12-hsl: 161 calc(var(--saturation-factor, 1)*88%) 87.6%;
+    --blurple-13-hsl: 161 calc(var(--saturation-factor, 1)*88%) 86.9%;
+    --blurple-14-hsl: 161 calc(var(--saturation-factor, 1)*88%) 86.3%;
+    --blurple-15-hsl: 161 calc(var(--saturation-factor, 1)*88%) 85.7%;
+    --blurple-16-hsl: 161 calc(var(--saturation-factor, 1)*88%) 85.1%;
+    --blurple-17-hsl: 161 calc(var(--saturation-factor, 1)*88%) 84.5%;
+    --blurple-18-hsl: 161 calc(var(--saturation-factor, 1)*88%) 83.7%;
+    --blurple-19-hsl: 161 calc(var(--saturation-factor, 1)*88%) 83.1%;
+    --blurple-20-hsl: 161 calc(var(--saturation-factor, 1)*88%) 82.5%;
+    --blurple-21-hsl: 161 calc(var(--saturation-factor, 1)*88%) 82%;
+    --blurple-22-hsl: 161 calc(var(--saturation-factor, 1)*88%) 81.4%;
+    --blurple-23-hsl: 161 calc(var(--saturation-factor, 1)*88%) 80.8%;
+    --blurple-24-hsl: 161 calc(var(--saturation-factor, 1)*88%) 80.2%;
+    --blurple-25-hsl: 161 calc(var(--saturation-factor, 1)*88%) 79.6%;
+    --blurple-26-hsl: 161 calc(var(--saturation-factor, 1)*88%) 79%;
+    --blurple-27-hsl: 161 calc(var(--saturation-factor, 1)*86.4%) 78.2%;
+    --blurple-28-hsl: 161 calc(var(--saturation-factor, 1)*86.4%) 77.8%;
+    --blurple-29-hsl: 161 calc(var(--saturation-factor, 1)*85%) 77.1%;
+    --blurple-30-hsl: 161 calc(var(--saturation-factor, 1)*85.1%) 76.5%;
+    --blurple-31-hsl: 161 calc(var(--saturation-factor, 1)*83.7%) 75.7%;
+    --blurple-32-hsl: 161 calc(var(--saturation-factor, 1)*82.5%) 74.9%;
+    --blurple-33-hsl: 161 calc(var(--saturation-factor, 1)*82.6%) 74.5%;
+    --blurple-34-hsl: 161 calc(var(--saturation-factor, 1)*81.4%) 73.7%;
+    --blurple-35-hsl: 161 calc(var(--saturation-factor, 1)*81.5%) 73.3%;
+    --blurple-36-hsl: 161 calc(var(--saturation-factor, 1)*80.5%) 72.5%;
+    --blurple-37-hsl: 161 calc(var(--saturation-factor, 1)*80.6%) 72%;
+    --blurple-38-hsl: 161 calc(var(--saturation-factor, 1)*79.6%) 71.4%;
+    --blurple-39-hsl: 161 calc(var(--saturation-factor, 1)*79.7%) 70.8%;
+    --blurple-40-hsl: 161 calc(var(--saturation-factor, 1)*78.7%) 70.2%;
+    --blurple-41-hsl: 161 calc(var(--saturation-factor, 1)*77.8%) 69.4%;
+    --blurple-42-hsl: 161 calc(var(--saturation-factor, 1)*78%) 69%;
+    --blurple-43-hsl: 161 calc(var(--saturation-factor, 1)*77.1%) 68.4%;
+    --blurple-44-hsl: 161 calc(var(--saturation-factor, 1)*77.3%) 67.8%;
+    --blurple-45-hsl: 161 calc(var(--saturation-factor, 1)*76.4%) 67.3%;
+    --blurple-46-hsl: 161 calc(var(--saturation-factor, 1)*76.5%) 66.9%;
+    --blurple-47-hsl: 161 calc(var(--saturation-factor, 1)*75.7%) 66.3%;
+    --blurple-48-hsl: 161 calc(var(--saturation-factor, 1)*75.9%) 65.9%;
+    --blurple-49-hsl: 161 calc(var(--saturation-factor, 1)*75.1%) 65.1%;
+    --blurple-50-hsl: 161 calc(var(--saturation-factor, 1)*75.3%) 64.7%;
+    --blurple-51-hsl: 161 calc(var(--saturation-factor, 1)*70.2%) 63.1%;
+    --blurple-52-hsl: 161 calc(var(--saturation-factor, 1)*65.6%) 61.6%;
+    --blurple-53-hsl: 161 calc(var(--saturation-factor, 1)*61.3%) 60%;
+    --blurple-54-hsl: 161 calc(var(--saturation-factor, 1)*58%) 58.6%;
+    --blurple-55-hsl: 161 calc(var(--saturation-factor, 1)*54.2%) 57.1%;
+    --blurple-56-hsl: 161 calc(var(--saturation-factor, 1)*51.4%) 55.7%;
+    --blurple-57-hsl: 161 calc(var(--saturation-factor, 1)*48.7%) 54.3%;
+    --blurple-58-hsl: 161 calc(var(--saturation-factor, 1)*45.6%) 52.7%;
+    --blurple-59-hsl: 161 calc(var(--saturation-factor, 1)*43.3%) 51.4%;
+    --blurple-60-hsl: 161 calc(var(--saturation-factor, 1)*41.1%) 50%;
+    --blurple-61-hsl: 161 calc(var(--saturation-factor, 1)*41.2%) 48.6%;
+    --blurple-62-hsl: 161 calc(var(--saturation-factor, 1)*41.3%) 47.3%;
+    --blurple-63-hsl: 161 calc(var(--saturation-factor, 1)*41.6%) 46.1%;
+    --blurple-64-hsl: 161 calc(var(--saturation-factor, 1)*41.7%) 44.7%;
+    --blurple-65-hsl: 161 calc(var(--saturation-factor, 1)*41.8%) 43.3%;
+    --blurple-66-hsl: 161 calc(var(--saturation-factor, 1)*42.2%) 42.2%;
+    --blurple-67-hsl: 161 calc(var(--saturation-factor, 1)*42.3%) 40.8%;
+    --blurple-68-hsl: 161 calc(var(--saturation-factor, 1)*42.7%) 39.6%;
+    --blurple-69-hsl: 161 calc(var(--saturation-factor, 1)*42.9%) 38.2%;
+    --blurple-70-hsl: 161 calc(var(--saturation-factor, 1)*43.3%) 37.1%;
+    --blurple-71-hsl: 161 calc(var(--saturation-factor, 1)*43.5%) 35.7%;
+    --blurple-72-hsl: 161 calc(var(--saturation-factor, 1)*44%) 34.5%;
+    --blurple-73-hsl: 161 calc(var(--saturation-factor, 1)*43.7%) 33.5%;
+    --blurple-74-hsl: 161 calc(var(--saturation-factor, 1)*44.3%) 32.4%;
+    --blurple-75-hsl: 161 calc(var(--saturation-factor, 1)*44.8%) 31.2%;
+    --blurple-76-hsl: 161 calc(var(--saturation-factor, 1)*45.2%) 29.8%;
+    --blurple-77-hsl: 161 calc(var(--saturation-factor, 1)*45.8%) 28.6%;
+    --blurple-78-hsl: 161 calc(var(--saturation-factor, 1)*46.5%) 27.5%;
+    --blurple-79-hsl: 161 calc(var(--saturation-factor, 1)*47.3%) 26.3%;
+    --blurple-80-hsl: 161 calc(var(--saturation-factor, 1)*47.1%) 25.3%;
+    --blurple-81-hsl: 161 calc(var(--saturation-factor, 1)*47.9%) 24.1%;
+    --blurple-82-hsl: 161 calc(var(--saturation-factor, 1)*48.9%) 22.9%;
+    --blurple-83-hsl: 161 calc(var(--saturation-factor, 1)*49.9%) 21.8%;
+    --blurple-84-hsl: 161 calc(var(--saturation-factor, 1)*50.2%) 21%;
+    --blurple-85-hsl: 161 calc(var(--saturation-factor, 1)*51.4%) 19.8%;
+    --blurple-86-hsl: 161 calc(var(--saturation-factor, 1)*51.3%) 18.8%;
+    --blurple-87-hsl: 161 calc(var(--saturation-factor, 1)*52.8%) 17.6%;
+    --blurple-88-hsl: 161 calc(var(--saturation-factor, 1)*54.9%) 16.7%;
+    --blurple-89-hsl: 161 calc(var(--saturation-factor, 1)*55%) 15.7%;
+    --blurple-90-hsl: 161 calc(var(--saturation-factor, 1)*57.1%) 14.5%;
+    --blurple-91-hsl: 161 calc(var(--saturation-factor, 1)*57.8%) 13.7%;
+    --blurple-92-hsl: 161 calc(var(--saturation-factor, 1)*60.5%) 12.5%;
+    --blurple-93-hsl: 161 calc(var(--saturation-factor, 1)*61.2%) 11.6%;
+    --blurple-94-hsl: 161 calc(var(--saturation-factor, 1)*61.9%) 10.6%;
+    --blurple-95-hsl: 161 calc(var(--saturation-factor, 1)*65.5%) 9.2%;
+    --blurple-96-hsl: 161 calc(var(--saturation-factor, 1)*66.5%) 8%;
+    --blurple-97-hsl: 161 calc(var(--saturation-factor, 1)*67.3%) 6.7%;
+    --blurple-98-hsl: 161 calc(var(--saturation-factor, 1)*66.9%) 4.9%;
+    --blurple-99-hsl: 161 calc(var(--saturation-factor, 1)*74.5%) 2.5%;
+    --blurple-100-hsl: 161 calc(var(--saturation-factor, 1)*0%) 0%;
+    /* translucent overlays (hover / selected): neutral white */
+    --opacity-1-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-4-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-8-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-12-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-16-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-20-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-24-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-28-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-32-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-36-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-40-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-44-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-48-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-52-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-56-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-60-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-64-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-68-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-72-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-76-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-80-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-84-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-88-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-92-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+    --opacity-96-hsl: 225 calc(var(--saturation-factor, 1)*8%) 80%;
+}
+
+/* =========================================================================
+   3. TYPOGRAPHY
+   html:root:root outranks Discord's per-language :root:lang() font rules.
+   ========================================================================= */
+html:root:root {
+    --font-primary: var(--ag-font);
+    --font-display: var(--ag-font);
+    --font-headline: var(--ag-font-display);
+    --font-code: var(--ag-font-code);
+    --primitive-typography-family-dm-sans: var(--ag-font);
+    --primitive-typography-family-rethink-sans: var(--ag-font);
+}
+
+body {
+    font-family: var(--ag-font);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* =========================================================================
+   4. DISCORD DESIGN TOKENS
+   Applies to every dark variant (Dark / Darker / Midnight), but not to
+   Nitro profile themes, which keep their own colours.
+   ========================================================================= */
+:root:is(.theme-dark, .theme-darker, .theme-midnight),
+:root :is(.theme-dark, .theme-darker, .theme-midnight):not(.custom-user-profile-theme) {
+    /* Backgrounds */
+    --app-frame-background: var(--ag-bg-0);
+    --background-base-lowest: var(--ag-bg-0);
+    --background-base-lower: var(--ag-bg-1);
+    --background-base-low: var(--ag-bg-2);
+    --background-surface-high: var(--ag-surface-1);
+    --background-surface-higher: var(--ag-surface-2);
+    --background-surface-highest: var(--ag-surface-3);
+    --background-mod-subtle: rgb(255 255 255 / 0.03);
+    --background-mod-muted: rgb(255 255 255 / 0.05);
+    --background-mod-normal: rgb(255 255 255 / 0.07);
+    --background-mod-strong: rgb(255 255 255 / 0.11);
+    --background-code: #050506;
+    --background-scrim: rgb(1 1 2 / 0.82);
+    --background-brand: var(--ag-accent-strong);
+    --background-accent: var(--ag-accent-strong);
+    --modal-background: var(--ag-surface-1);
+    --card-background-default: var(--ag-surface-1);
+    --chat-background-default: var(--ag-surface-1);
+    --custom-channel-members-bg: var(--ag-bg-1);
+
+    /* Brand / accent */
+    --brand-360: color-mix(in oklab, var(--ag-accent) 70%, white);
+    --brand-400: color-mix(in oklab, var(--ag-accent) 85%, white);
+    --brand-500: var(--ag-accent-strong);
+    --brand-500-hsl: 163 83% 26%;
+    --brand-560: color-mix(in oklab, var(--ag-accent-strong) 85%, black);
+    --brand-600: color-mix(in oklab, var(--ag-accent-strong) 70%, black);
+    --text-brand: var(--ag-accent);
+    --icon-brand: var(--ag-accent);
+    --control-primary-background-default: var(--ag-accent-strong);
+    --control-primary-background-hover: color-mix(in oklab, var(--ag-accent-strong) 85%, var(--ag-accent));
+    --control-primary-background-active: color-mix(in oklab, var(--ag-accent-strong) 82%, black);
+    --control-secondary-background-default: rgb(255 255 255 / 0.06);
+    --control-secondary-background-hover: rgb(255 255 255 / 0.09);
+    --control-secondary-background-active: rgb(255 255 255 / 0.12);
+    --control-secondary-border-default: var(--ag-line-2);
+    --control-secondary-border-hover: var(--ag-line-3);
+    --control-secondary-border-active: var(--ag-line-3);
+    --togglebutton-background-selected: var(--ag-accent-soft);
+    --togglebutton-border-selected: var(--ag-line-accent);
+    --reaction-background-active: var(--ag-accent-soft);
+    --reaction-border-active: var(--ag-line-accent);
+    --radio-border-selected-default: var(--ag-accent);
+    --keyword-highlight-background: color-mix(in oklab, var(--ag-accent) 28%, transparent);
+
+    /* Text */
+    --text-strong: var(--ag-text-strong);
+    --text-default: var(--ag-text);
+    --text-muted: var(--ag-text-muted);
+    --text-subtle: var(--ag-text-subtle);
+    --text-link: var(--ag-link);
+    --chat-text-muted: var(--ag-text-muted);
+    --channels-default: var(--ag-text-muted);
+
+    /* Interactive: hover / pressed / selected rows everywhere */
+    --interactive-text-default: var(--ag-text-muted);
+    --interactive-text-hover: var(--ag-text);
+    --interactive-text-active: var(--ag-text-strong);
+    --interactive-icon-default: var(--ag-text-muted);
+    --interactive-icon-hover: var(--ag-text-strong);
+    --interactive-icon-active: var(--ag-text-strong);
+    --interactive-muted: color-mix(in oklab, var(--ag-text-subtle) 70%, transparent);
+    --interactive-background-hover: rgb(255 255 255 / 0.04);
+    --interactive-background-active: rgb(255 255 255 / 0.06);
+    --interactive-background-selected: rgb(255 255 255 / 0.07);
+    --interactive-accent-background-default: var(--ag-accent-soft);
+    --icon-default: var(--ag-text);
+    --icon-muted: var(--ag-text-muted);
+    --icon-subtle: var(--ag-text-subtle);
+    --icon-strong: var(--ag-text-strong);
+
+    /* Lines */
+    --border-subtle: var(--ag-line-1);
+    --border-muted: var(--ag-line-1);
+    --border-normal: var(--ag-line-2);
+    --border-strong: var(--ag-line-3);
+    --border-focus: var(--ag-accent);
+    --app-frame-border: var(--ag-line-1);
+    --chat-border: var(--ag-line-1);
+
+    /* Inputs */
+    --input-background-default: var(--ag-surface-1);
+    --input-border-default: var(--ag-line-2);
+    --input-border-hover: var(--ag-line-3);
+    --input-border-active: var(--ag-accent);
+    --input-placeholder-text-default: var(--ag-text-subtle);
+    --input-text-default: var(--ag-text);
+
+    /* Messages */
+    --message-background-hover: rgb(255 255 255 / 0.025);
+    --message-highlight-background-default: var(--ag-accent-softer);
+    --message-highlight-background-hover: var(--ag-accent-soft);
+    --message-mentioned-background-default: color-mix(in oklab, var(--ag-accent-2) 7%, transparent);
+    --message-mentioned-background-hover: color-mix(in oklab, var(--ag-accent-2) 11%, transparent);
+
+    /* Scrollbars */
+    --scrollbar-auto-thumb: rgb(255 255 255 / 0.10);
+    --scrollbar-auto-track: transparent;
+    --scrollbar-thin-thumb: rgb(255 255 255 / 0.10);
+    --scrollbar-thin-track: transparent;
+
+    /* Elevation */
+    --shadow-low: 0 1px 3px rgb(0 0 0 / 0.35);
+    --shadow-medium: 0 8px 24px -6px rgb(0 0 0 / 0.55);
+    --shadow-high: var(--ag-shadow);
+}
+
+::selection {
+    background: color-mix(in oklab, var(--ag-accent) 36%, transparent);
+    color: var(--ag-text-strong);
+}
+
+/* =========================================================================
+   5. APP SHELL
+   ========================================================================= */
+
+/* A faint accent glow in two corners of the app frame, nothing more */
+.bg_Fd0FEH {
+    overflow: hidden;
+}
+
+.bg_Fd0FEH::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    pointer-events: none;
+    opacity: var(--ag-haze);
+    background:
+        radial-gradient(34% 38% at 86% 8%, var(--ag-accent), transparent 70%),
+        radial-gradient(30% 36% at 8% 92%, var(--ag-accent-2), transparent 70%);
+}
+
+.bar_3zSH5d {
+    background: transparent;
+}
+
+.title_3zSH5d {
+    font-family: var(--ag-font-display);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ag-text-subtle);
+}
+
+.winButtonClose_3zSH5d:hover {
+    background-color: #c22f4a !important;
+}
+
+/* Channel sidebar */
+.sidebarList_pog62O {
+    background: var(--ag-bg-2);
+    border-color: var(--ag-line-1) !important;
+}
+
+/* User panel (bottom-left): floating glass card */
+.panels_pog62O {
+    background: var(--ag-glass);
+    backdrop-filter: var(--ag-blur);
+    border: 1px solid var(--ag-line-2);
+    border-radius: var(--ag-radius-lg);
+    box-shadow: var(--ag-edge), var(--ag-shadow);
+}
+
+/* =========================================================================
+   6. SERVER BAR
+   ========================================================================= */
+.blobContainer_IaPwK5 {
+    transition: transform var(--ag-med) var(--ag-ease), filter var(--ag-med) var(--ag-ease);
+}
+
+.blobContainer_IaPwK5:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 6px 12px rgb(0 0 0 / 0.5));
+}
+
+.blobContainer_IaPwK5:active {
+    transform: scale(0.95);
+}
+
+.blobContainer_IaPwK5.selected_IaPwK5 {
+    filter: drop-shadow(0 0 10px color-mix(in oklab, var(--ag-accent) 35%, transparent));
+}
+
+.guildSeparator_3WHVfy {
+    background: var(--ag-line-2);
+    border-radius: var(--ag-radius-pill);
+}
+
+/* Selected / unread pill: accent gradient */
+.item__o8_Xq {
+    background: linear-gradient(180deg, var(--ag-accent), var(--ag-accent-2));
+}
+
+.numberBadge_lMvXrQ {
+    background-color: var(--ag-accent-2-strong) !important;
+    color: #fff !important;
+    font-weight: 700;
+}
+
+/* =========================================================================
+   7. CHANNEL LIST
+   Channel rows have no stable class, so these rules use Discord's list-item ids.
+   ========================================================================= */
+[data-list-item-id^="channels___"] {
+    border-radius: var(--ag-radius-md) !important;
+    box-shadow: inset 0 0 0 1px transparent;
+    transition:
+        background-color var(--ag-fast) var(--ag-ease),
+        color var(--ag-fast) var(--ag-ease),
+        box-shadow var(--ag-med) var(--ag-ease);
+}
+
+/* Selected channel: quiet fill, hairline outline, short accent tick */
+[data-list-item-id^="channels___"][aria-current="page"],
+[aria-selected="true"]>[data-list-item-id^="channels___"],
+li[class*="selected"] [data-list-item-id^="channels___"] {
+    background:
+        linear-gradient(180deg, var(--ag-accent), var(--ag-accent-2)) 0 50% / 2px 50% no-repeat,
+        linear-gradient(90deg, var(--ag-accent-softer), transparent 70%),
+        rgb(255 255 255 / 0.05);
+    box-shadow: inset 0 0 0 1px var(--ag-line-2);
+    color: var(--ag-text-strong);
+}
+
+/* =========================================================================
+   8. CHAT
+   ========================================================================= */
+.chatContent_z_gUBg {
+    background: var(--ag-bg-1);
+}
+
+/* Channel header: small, wide-tracked display type */
+.title_z_gUBg {
+    border-bottom: 1px solid var(--ag-line-1);
+}
+
+.titleWrapper_ybUK7Z h1,
+.titleWrapper_ybUK7Z [class*="title"] {
+    font-family: var(--ag-font-display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+/* Message rows: soft rounded hover card */
+.message_SY_P2T {
+    border-radius: var(--ag-radius-md) !important;
+    margin-inline: 8px;
+    transition: background-color var(--ag-fast) var(--ag-ease);
+}
+
+.mentioned_SY_P2T::before {
+    background: linear-gradient(180deg, var(--ag-accent), var(--ag-accent-2)) !important;
+    border-radius: var(--ag-radius-pill);
+}
+
+.replying_SY_P2T::before {
+    background: var(--ag-accent) !important;
+    border-radius: var(--ag-radius-pill);
+}
+
+.header_2i8Bfm [class*="username"] {
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.repliedMessage_2i8Bfm::before {
+    border-color: var(--ag-line-3);
+}
+
+/* Code */
+.markup_ku1OHH pre,
+.markup_ku1OHH code {
+    border-radius: var(--ag-radius-sm);
+    font-family: var(--ag-font-code);
+}
+
+.markup_ku1OHH code.inline {
+    color: var(--ag-link);
+    background: color-mix(in oklab, var(--ag-accent) 8%, var(--ag-bg-0));
+    border: 1px solid color-mix(in oklab, var(--ag-accent) 16%, transparent);
+}
+
+.markup_ku1OHH pre {
+    border: 1px solid var(--ag-line-2);
+    border-radius: var(--ag-radius-md);
+    background: var(--background-code);
+}
+
+.codeContainer_ku1OHH {
+    border-radius: var(--ag-radius-md);
+}
+
+.blockquoteDivider_ku1OHH {
+    background: linear-gradient(180deg, var(--ag-accent), var(--ag-accent-2));
+    border-radius: var(--ag-radius-pill);
+}
+
+.roleMention_ku1OHH,
+.markup_ku1OHH .mention {
+    border-radius: var(--ag-radius-sm);
+}
+
+/* Embeds: flat card with a hairline */
+.embedFull_XyW1ZT {
+    border-radius: var(--ag-radius-md);
+    background: var(--ag-surface-1);
+    border-top: 1px solid var(--ag-line-1);
+    border-right: 1px solid var(--ag-line-1);
+    border-bottom: 1px solid var(--ag-line-1);
+    box-shadow: var(--ag-edge);
+}
+
+.embedTitle_XyW1ZT {
+    font-family: var(--ag-font);
+    font-weight: 700;
+}
+
+/* Reactions: pills */
+.reaction_MmKct8 {
+    border-radius: var(--ag-radius-pill);
+    transition:
+        transform var(--ag-med) var(--ag-ease),
+        background-color var(--ag-fast) var(--ag-ease),
+        border-color var(--ag-fast) var(--ag-ease);
+}
+
+.reaction_MmKct8:hover {
+    transform: translateY(-1px);
+    border-color: var(--ag-line-3);
+}
+
+.reaction_MmKct8:active {
+    transform: scale(0.95);
+}
+
+.reactionMe_MmKct8 {
+    background-color: var(--ag-accent-soft);
+    border-color: var(--ag-line-accent);
+}
+
+.reactionMe_MmKct8 .reactionCount_MmKct8 {
+    color: var(--ag-accent);
+}
+
+/* =========================================================================
+   9. MESSAGE BOX
+   ========================================================================= */
+.channelTextArea_2x8-Qn .scrollableContainer_2x8-Qn {
+    background: var(--ag-surface-1);
+    border: 1px solid var(--ag-line-2);
+    border-radius: var(--ag-radius-lg);
+    box-shadow: var(--ag-edge);
+    transition:
+        border-color var(--ag-med) var(--ag-ease),
+        box-shadow var(--ag-med) var(--ag-ease);
+}
+
+.channelTextArea_2x8-Qn:focus-within .scrollableContainer_2x8-Qn {
+    border-color: var(--ag-line-accent);
+    box-shadow: var(--ag-edge), var(--ag-ring);
+}
+
+.channelTextArea_2x8-Qn textarea,
+.channelTextArea_2x8-Qn [role="textbox"] {
+    caret-color: var(--ag-accent);
+}
+
+.channelTextArea_2x8-Qn .button_2x8-Qn {
+    transition: transform var(--ag-med) var(--ag-ease), color var(--ag-fast) var(--ag-ease);
+}
+
+.channelTextArea_2x8-Qn .button_2x8-Qn:hover {
+    transform: scale(1.08);
+}
+
+/* =========================================================================
+   10. MEMBER LIST
+   ========================================================================= */
+.container_86es0b,
+.members_86es0b,
+.member_86es0b {
+    background: var(--ag-bg-1);
+}
+
+.container_86es0b {
+    border-inline-start-color: var(--ag-line-1);
+}
+
+.container_J1Adu_ {
+    border-radius: var(--ag-radius-md);
+    transition: background-color var(--ag-fast) var(--ag-ease);
+}
+
+.container_J1Adu_.selected_J1Adu_ {
+    background: rgb(255 255 255 / 0.06);
+    box-shadow: inset 0 0 0 1px var(--ag-line-2);
+}
+
+/* Role headers: tiny tracked labels */
+.membersGroup_86es0b {
+    font-family: var(--ag-font-display);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ag-text-subtle);
+}
+
+/* =========================================================================
+   11. FLOATING UI: menus, tooltips, popouts, modals
+   ========================================================================= */
+.menu_M3qk4j {
+    background: var(--ag-glass) !important;
+    backdrop-filter: var(--ag-blur);
+    border: 1px solid var(--ag-line-2) !important;
+    border-radius: var(--ag-radius-lg);
+    box-shadow: var(--ag-edge), var(--ag-shadow);
+}
+
+.item_M3qk4j {
+    border-radius: var(--ag-radius-sm);
+    transition:
+        background-color var(--ag-fast) var(--ag-ease),
+        color var(--ag-fast) var(--ag-ease);
+}
+
+.item_M3qk4j.focused_M3qk4j {
+    background: var(--ag-accent-soft);
+    color: var(--ag-text-strong);
+}
+
+.item_M3qk4j.colorDanger_M3qk4j.focused_M3qk4j {
+    background: color-mix(in oklab, #f0506e 20%, transparent);
+    color: #ffb3c1;
+}
+
+.separator_M3qk4j {
+    background: var(--ag-line-2) !important;
+}
+
+.tooltipPrimary_3_v8qp {
+    --tooltip-pointer-bg: var(--ag-surface-3);
+    background: var(--ag-surface-3);
+    border: 1px solid var(--ag-line-2);
+    border-radius: var(--ag-radius-sm);
+    box-shadow: var(--shadow-medium);
+}
+
+.tooltipPrimary_3_v8qp .tooltipPointer_3_v8qp {
+    border-top-color: var(--ag-surface-3);
+}
+
+.outer_P1YEjQ {
+    border-radius: var(--ag-radius-lg);
+    box-shadow: var(--ag-shadow), 0 0 0 1px var(--ag-line-2);
+}
+
+.root__KoJTP {
+    border: 1px solid var(--ag-line-2);
+    border-radius: var(--ag-radius-lg);
+    box-shadow: var(--ag-edge), var(--ag-shadow);
+}
+
+.header__KoJTP h1,
+.header__KoJTP [class*="title"] {
+    font-family: var(--ag-font-display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* =========================================================================
+   12. CONTROLS
+   ========================================================================= */
+.button_9OQtot {
+    border-radius: var(--ag-radius-md);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    transition:
+        transform var(--ag-fast) var(--ag-ease),
+        filter var(--ag-fast) var(--ag-ease),
+        box-shadow var(--ag-med) var(--ag-ease),
+        background-color var(--ag-fast) var(--ag-ease),
+        border-color var(--ag-fast) var(--ag-ease);
+}
+
+.button_9OQtot:not(:disabled):hover {
+    filter: brightness(1.08);
+}
+
+.button_9OQtot:not(:disabled):active {
+    transform: scale(0.97);
+}
+
+/* Brand buttons: emerald -> teal, with a soft accent shadow on hover */
+.lookFilled_9OQtot.colorBrand_9OQtot:not(:disabled) {
+    background: linear-gradient(135deg, var(--ag-accent-strong), var(--ag-accent-2-strong));
+    color: #fff;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14);
+}
+
+.lookFilled_9OQtot.colorBrand_9OQtot:not(:disabled):hover {
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18), 0 8px 22px -8px color-mix(in oklab, var(--ag-accent) 60%, transparent);
+}
+
+.lookOutlined_9OQtot:not(:disabled):hover {
+    border-color: var(--ag-accent) !important;
+    color: var(--ag-accent) !important;
+}
+
+.inputDefault_cZux1n {
+    border-radius: var(--ag-radius-md);
+    caret-color: var(--ag-accent);
+    transition: border-color var(--ag-med) var(--ag-ease), box-shadow var(--ag-med) var(--ag-ease);
+}
+
+.inputDefault_cZux1n:focus {
+    box-shadow: var(--ag-ring);
+}
+
+/* Settings sidebar tabs */
+.side_6zZYhF .header_6zZYhF {
+    font-family: var(--ag-font-display);
+    letter-spacing: 0.16em;
+    color: var(--ag-text-subtle);
+}
+
+.side_6zZYhF .item_6zZYhF {
+    border-radius: var(--ag-radius-md);
+    transition:
+        background-color var(--ag-fast) var(--ag-ease),
+        color var(--ag-fast) var(--ag-ease);
+}
+
+.side_6zZYhF .item_6zZYhF.selected_6zZYhF {
+    background:
+        linear-gradient(90deg, var(--ag-accent-softer), transparent 70%),
+        rgb(255 255 255 / 0.05);
+    box-shadow: inset 0 0 0 1px var(--ag-line-2);
+    color: var(--ag-text-strong);
+}
+
+.side_6zZYhF .separator_6zZYhF {
+    background: var(--ag-line-2);
+}
+
+:is(.thin_tqapBM, .auto_tqapBM)::-webkit-scrollbar-thumb {
+    border-radius: var(--ag-radius-pill) !important;
+}
+
+:is(.thin_tqapBM, .auto_tqapBM)::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(255 255 255 / 0.2);
+}
+
+/* =========================================================================
+   13. ANIMATIONS: skipped when "Reduce motion" is on (Discord or OS)
+   Short and quiet on purpose. Entrance animations use "backwards" fill
+   so they never hold a transform that would block the hover effects.
+   ========================================================================= */
+@keyframes ag-pop {
+    from {
+        opacity: 0;
+        transform: translateY(4px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes ag-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes ag-dot {
+
+    0%,
+    100% {
+        background-color: var(--ag-text-muted);
+        transform: translateY(0);
+    }
+
+    50% {
+        background-color: var(--ag-accent);
+        transform: translateY(-2px);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+
+    html:not(.reduce-motion) .menu_M3qk4j {
+        animation: ag-pop var(--ag-med) var(--ag-ease) backwards;
+        transform-origin: top left;
+    }
+
+    html:not(.reduce-motion) .tooltip_3_v8qp {
+        animation: ag-fade-up var(--ag-fast) var(--ag-ease) backwards;
+    }
+
+    html:not(.reduce-motion) :is(.outer_P1YEjQ, .root__KoJTP) {
+        animation: ag-pop var(--ag-slow) var(--ag-ease) backwards;
+    }
+
+    /* Messages fade up as they arrive; the list fades in on channel switch */
+    html:not(.reduce-motion) :is(.messageListItem_SY_P2T, .messagesWrapper_8AE1Qq) {
+        animation: ag-fade-up var(--ag-slow) var(--ag-ease) backwards;
+    }
+
+    /* Links: a gradient underline sweeps in on hover */
+    html:not(.reduce-motion) .markup_ku1OHH a {
+        background-image: linear-gradient(90deg, var(--ag-accent), var(--ag-accent-2));
+        background-repeat: no-repeat;
+        background-position: 0 100%;
+        background-size: 0% 1px;
+        transition: background-size var(--ag-med) var(--ag-ease), color var(--ag-fast) var(--ag-ease);
+    }
+
+    html:not(.reduce-motion) .markup_ku1OHH a:hover {
+        background-size: 100% 1px;
+        text-decoration: none;
+    }
+
+    /* Typing dots pick up the accent */
+    html:not(.reduce-motion) .typing_U9Tvvz .dot_U9Tvvz {
+        animation: ag-dot 1.2s ease-in-out infinite;
+    }
+
+    html:not(.reduce-motion) .typing_U9Tvvz .dot_U9Tvvz:nth-child(2) {
+        animation-delay: 0.15s;
+    }
+
+    html:not(.reduce-motion) .typing_U9Tvvz .dot_U9Tvvz:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    /* Settings cog turns */
+    html:not(.reduce-motion) .buttons_g6VwXp> :last-child svg {
+        transition: transform var(--ag-slow) var(--ag-ease);
+    }
+
+    html:not(.reduce-motion) .buttons_g6VwXp> :last-child:hover svg {
+        transform: rotate(60deg);
+    }
+}
+
+/* Reduce motion: also drop the hover movement */
+@media (prefers-reduced-motion: reduce) {
+
+    .blobContainer_IaPwK5:hover,
+    .reaction_MmKct8:hover,
+    .channelTextArea_2x8-Qn .button_2x8-Qn:hover {
+        transform: none;
+    }
+}
+
+html.reduce-motion :is(.blobContainer_IaPwK5, .reaction_MmKct8, .channelTextArea_2x8-Qn .button_2x8-Qn):hover {
+    transform: none;
+}
